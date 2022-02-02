@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <map>
 #include <vector>
 
 class Subscriber;
@@ -15,8 +16,5 @@ class Broker
     virtual void registerToPublisher(Publisher *ptr);
     virtual void onPublish(std::string topic, int newData);
 
-  private:
-    Publisher *mPublisher;
-    std::vector<Subscriber *> mSubscriberForAA;
-    std::vector<Subscriber *> mSubscriberForBB;
+    std::multimap<std::string, Subscriber *> mSubscriberMap;
 };

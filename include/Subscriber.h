@@ -12,7 +12,7 @@ class Subscriber
     virtual void subscribeToBroker(Broker *ptr, std::string topic);
     virtual void updateCallback(int newVal);
 
-  private:
+  protected:
     int mData;
     std::string mTopic;
 };

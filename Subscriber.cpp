@@ -9,6 +9,6 @@ void Subscriber::subscribeToBroker(Broker *ptr, std::string topic)
 
 void Subscriber::updateCallback(int newData)
 {
-    std::cout << "new data for topic " << mTopic << " is " << mData << "\n";
     mData = newData;
+    std::cout << "new data for topic " << mTopic << " is " << mData << "\n";
 }
