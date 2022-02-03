@@ -10,9 +10,12 @@ class Subscriber
     virtual ~Subscriber() {}
 
     virtual void subscribeToBroker(Broker *ptr, std::string topic);
-    virtual void updateCallback(int newVal);
 
-  protected:
+    // template <class DataValue>
+    // void updateCallback(DataValue newData);
+    virtual void updateCallback(int newData);
+
+    // protected:
     int mData;
     std::string mTopic;
 };

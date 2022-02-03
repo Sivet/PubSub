@@ -17,8 +17,7 @@ class Publisher
     virtual void publishToBroker(std::string topic, int newData);
     virtual void update(void);
 
-  protected:
+    // protected:
     int mData;
-
     Broker *mBrokerPtr;
 };

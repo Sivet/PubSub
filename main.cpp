@@ -21,7 +21,6 @@ class Email : public Publisher
         mData++;
     }
 };
-
 class SmS : public Publisher
 {
   public:
@@ -58,13 +57,15 @@ int main()
     Broker broker;
     Publisher pubBase;
     Email emailPub;
+    Email email2Pub;
     SmS smsPub;
-    BadPub smsBadPub;
+    BadPub badPub;
 
     broker.registerToPublisher(&pubBase);
     broker.registerToPublisher(&emailPub);
     broker.registerToPublisher(&smsPub);
-    broker.registerToPublisher(&smsBadPub);
+    broker.registerToPublisher(&badPub);
+    broker.registerToPublisher(&email2Pub);
 
     Subscriber sub1;
     Subscriber sub2;
@@ -76,16 +77,18 @@ int main()
     sub3.subscribeToBroker(&broker, "SmS");
     sub4.subscribeToBroker(&broker, "SmS");
 
-    std::cout << "Number of elements with key Base " << broker.mSubscriberMap.count("Base") << std::endl;
-    std::cout << "Number of elements with key Email " << broker.mSubscriberMap.count("Email") << std::endl;
-    std::cout << "Number of elements with key SmS " << broker.mSubscriberMap.count("SmS") << std::endl;
-    std::cout << "Number of elements with key BadPub " << broker.mSubscriberMap.count("BadPub") << std::endl;
+    // std::cout << "Number of elements with key Base " << broker.mSubscriberMap.count("Base") << std::endl;
+    // std::cout << "Number of elements with key Email " << broker.mSubscriberMap.count("Email") << std::endl;
+    // std::cout << "Number of elements with key SmS " << broker.mSubscriberMap.count("SmS") << std::endl;
+    // std::cout << "Number of elements with key BadPub " << broker.mSubscriberMap.count("BadPub") << std::endl;
 
     while (true) {
         pubBase.update();
         emailPub.update();
         smsPub.update();
-        smsBadPub.update();
+        badPub.update();
+        email2Pub.update();
+        // std::cout << "Number of elements with key BadPub " << broker.mSubscriberMap.count("BadPub") << std::endl;
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
     return 0;
