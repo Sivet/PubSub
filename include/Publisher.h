@@ -2,22 +2,20 @@
 
 #include <iostream>
 
-class Broker;
+#include "Broker.h"
 
 class Publisher
 {
   public:
     Publisher()
-        : mData(0), mBrokerPtr(nullptr)
+        : mBrokerPtr(nullptr)
     {
     }
     virtual ~Publisher() {}
 
     virtual void registerBroker(Broker *pBroker);
-    virtual void publishToBroker(std::string topic, int newData);
-    virtual void update(void);
+    virtual void publishToBroker(Topic topic, Event &newEvent);
 
     // protected:
-    int mData;
     Broker *mBrokerPtr;
 };

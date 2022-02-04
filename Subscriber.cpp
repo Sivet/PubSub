@@ -1,16 +1,12 @@
 #include "Subscriber.h"
-#include "Broker.h"
 
-void Subscriber::subscribeToBroker(Broker *ptr, std::string topic)
+void Subscriber::subscribeToBroker(Broker *ptr, Topic topic)
 {
     mTopic = topic;
     ptr->addSubscriber(this, topic);
 }
 
-// template <class DataValue>
-void Subscriber::updateCallback(int newData)
+void Subscriber::updateCallback(Event &newEvent)
 {
-    mData = newData;
-    // std::cout << "Base Subscriber recieved data" << std::endl;
-    std::cout << "new data for topic " << mTopic << " is " << mData << "\n";
+    std::cout << "Base Sub got callback" << std::endl;
 }

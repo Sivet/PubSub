@@ -2,20 +2,16 @@
 
 #include <iostream>
 
-class Broker;
+#include "Broker.h"
 
 class Subscriber
 {
   public:
     virtual ~Subscriber() {}
 
-    virtual void subscribeToBroker(Broker *ptr, std::string topic);
-
-    // template <class DataValue>
-    // void updateCallback(DataValue newData);
-    virtual void updateCallback(int newData);
+    virtual void subscribeToBroker(Broker *ptr, Topic topic);
+    virtual void updateCallback(Event &newEvent);
 
     // protected:
-    int mData;
-    std::string mTopic;
+    Topic mTopic;
 };

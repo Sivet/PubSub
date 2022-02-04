@@ -4,21 +4,27 @@
 #include <map>
 #include <vector>
 
+#include "Event.h"
+
+enum class Topic {
+    Base,
+    Email,
+    SmS,
+    BadTopic
+};
+
 class Subscriber;
 class Publisher;
 
-// template <typename TopicType>
 class Broker
 {
   public:
     virtual ~Broker() {}
 
-    void addSubscriber(Subscriber *ptr, std::string topic);
+    void addSubscriber(Subscriber *ptr, Topic topic);
     void registerToPublisher(Publisher *ptr);
-    // template <typename NewData>
-    // void onPublish(std::string topic, NewData newData);
-    void onPublish(std::string topic, int newData);
+    void onPublish(Topic topic, Event &newEvent);
 
     // protected:
-    std::map<std::string, std::vector<Subscriber *>> mSubscriberMap;
+    std::map<Topic, std::vector<Subscriber *>> mSubscriberMap;
 };

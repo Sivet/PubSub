@@ -6,89 +6,99 @@
 #include "Publisher.h"
 #include "Subscriber.h"
 
+class EmailEvent : public EventType<EmailEvent>
+{
+  public:
+    EmailEvent(std::string data)
+        : emailData(data) {}
+    ~EmailEvent() {}
+    std::string emailData;
+};
+class SmSEvent : public EventType<SmSEvent>
+{
+  public:
+    SmSEvent(int data)
+        : smsData(data) {}
+    ~SmSEvent() {}
+    int smsData;
+};
+
 class Email : public Publisher
 {
   public:
-    Email() : Publisher()
-    {
-        mData = 2;
-    }
+    Email() : Publisher() {}
     ~Email() {}
-
-    void update(void) override
-    {
-        publishToBroker("Email", mData);
-        mData++;
-    }
 };
 class SmS : public Publisher
 {
   public:
-    SmS() : Publisher()
-    {
-        mData = 5;
-    }
+    SmS() : Publisher() {}
     ~SmS() {}
-
-    void update(void) override
-    {
-        publishToBroker("SmS", mData);
-        mData++;
-    }
 };
-class BadPub : public Publisher
+
+class EmailSub : public Subscriber
 {
   public:
-    BadPub() : Publisher()
-    {
-        mData = 5;
-    }
-    ~BadPub() {}
+    EmailSub() : emailEvent(""){};
+    ~EmailSub(){};
 
-    void update(void) override
+    void updateCallback(Event &newEvent) override
     {
-        publishToBroker("BadPub", mData);
-        mData++;
+        emailEvent.emailData += newEvent.GetAs<EmailEvent>().emailData;
+        std::cout << "Email Sub new data " << emailEvent.emailData << std::endl;
     }
+
+    EmailEvent emailEvent;
+};
+class SmSSub : public Subscriber
+{
+  public:
+    SmSSub() : smsEvent(0){};
+    ~SmSSub(){};
+
+    void updateCallback(Event &newEvent) override
+    {
+        smsEvent.smsData += newEvent.GetAs<SmSEvent>().smsData;
+        std::cout << "SmS Sub new data " << smsEvent.smsData << std::endl;
+    }
+
+    SmSEvent smsEvent;
 };
 
 int main()
 {
     Broker broker;
+
     Publisher pubBase;
     Email emailPub;
     Email email2Pub;
     SmS smsPub;
-    BadPub badPub;
+    // BadPub badPub;
 
     broker.registerToPublisher(&pubBase);
     broker.registerToPublisher(&emailPub);
-    broker.registerToPublisher(&smsPub);
-    broker.registerToPublisher(&badPub);
     broker.registerToPublisher(&email2Pub);
+    broker.registerToPublisher(&smsPub);
 
-    Subscriber sub1;
-    Subscriber sub2;
-    Subscriber sub3;
-    Subscriber sub4;
+    Subscriber baseSub;
+    EmailSub eSub;
+    SmSSub sSub2;
+    SmSSub sSub;
 
-    sub1.subscribeToBroker(&broker, "Base");
-    sub2.subscribeToBroker(&broker, "Email");
-    sub3.subscribeToBroker(&broker, "SmS");
-    sub4.subscribeToBroker(&broker, "SmS");
+    baseSub.subscribeToBroker(&broker, Topic::Base);
+    eSub.subscribeToBroker(&broker, Topic::Email);
+    sSub2.subscribeToBroker(&broker, Topic::Email);
+    sSub.subscribeToBroker(&broker, Topic::SmS);
 
-    // std::cout << "Number of elements with key Base " << broker.mSubscriberMap.count("Base") << std::endl;
-    // std::cout << "Number of elements with key Email " << broker.mSubscriberMap.count("Email") << std::endl;
-    // std::cout << "Number of elements with key SmS " << broker.mSubscriberMap.count("SmS") << std::endl;
-    // std::cout << "Number of elements with key BadPub " << broker.mSubscriberMap.count("BadPub") << std::endl;
-
+    Event be;
+    EmailEvent ev("a");
+    SmSEvent sv(0);
     while (true) {
-        pubBase.update();
-        emailPub.update();
-        smsPub.update();
-        badPub.update();
-        email2Pub.update();
-        // std::cout << "Number of elements with key BadPub " << broker.mSubscriberMap.count("BadPub") << std::endl;
+        pubBase.publishToBroker(Topic::Base, be);
+        emailPub.publishToBroker(Topic::Email, ev);
+        email2Pub.publishToBroker(Topic::Email, ev);
+        smsPub.publishToBroker(Topic::SmS, sv);
+        std::cout << "---" << std::endl;
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
     return 0;
